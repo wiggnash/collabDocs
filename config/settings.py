@@ -12,20 +12,34 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 
+import environ
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Read configuration from the environment, with safe type casting.
+# environ.Env declares each var's type + default; env() / env.bool() then
+# cast strings from .env correctly (e.g. "False" -> the bool False, not a
+# truthy non-empty string).
+env = environ.Env(
+    DEBUG=(bool, False),
+    NODB=(bool, True),
+    ALLOWED_HOSTS=(list, []),
+)
+# Load the .env file sitting next to manage.py into os.environ.
+environ.Env.read_env(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-0%vvu-^xq-b+h-&+36bu!6b&46hcs_i1a+1tkqhh(t0310z##@'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env('ALLOWED_HOSTS')
 
 
 # Application definition
@@ -37,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -72,12 +87,24 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# NODB is our explicit database switch (see .env):
+#   True  -> file-based SQLite, zero-setup dev default.
+#   False -> PostgreSQL, parsed from DATABASE_URL by env.db().
+# Both branches keep credentials out of source — SQLite has none, and the
+# Postgres URL lives in .env, never here.
+if env('NODB'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    # env.db() reads DATABASE_URL and returns a ready DATABASES['default']
+    # dict (ENGINE/NAME/USER/PASSWORD/HOST/PORT) — no code change to swap DBs.
+    DATABASES = {
+        'default': env.db('DATABASE_URL'),
+    }
 
 
 # Password validation
