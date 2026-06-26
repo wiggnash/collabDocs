@@ -1,0 +1,167 @@
+// =============================================================================
+// CollabDocs — ERD (DBML)
+// Paste this into https://dbdiagram.io to render the diagram.
+//
+// Scope: this file is the SPEC-MINIMUM model, faithful to docs/project_brief.md
+// section 2.1. Optional "nice to have" fields are listed as comments at the end
+// of each table (prefixed `// +`) so we can decide together which to promote
+// into real columns before we generate the final diagram / write models.py.
+//
+// DBML notes for learners:
+//   - `pk`            -> primary key
+//   - `[unique]`      -> UNIQUE constraint
+//   - `[not null]`    -> NOT NULL
+//   - `Ref:`          -> a foreign-key relationship (the arrow in the diagram)
+//   - `enum`          -> maps to Django TextChoices
+//   - DBML has no native M2M, so Tag<->Document needs an explicit join table,
+//     which is exactly what Django's ManyToManyField creates under the hood.
+// =============================================================================
+
+// ---- Enums (Django TextChoices) --------------------------------------------
+
+enum workspace_member_role {
+  admin
+  editor
+  viewer
+}
+
+enum document_status {
+  draft
+  published
+  archived
+}
+
+// ---- User ------------------------------------------------------------------
+
+Table users {
+  id         uuid       [pk, note: 'uuid.uuid4, editable=False']
+  first_name varchar(50)
+  last_name  varchar(50)
+  email      varchar(254) [unique, not null, note: 'CharField, NOT EmailField (per brief)']
+  phone      varchar(15)  [unique, not null]
+  created_at timestamp    [note: 'auto_now_add=True']
+  updated_at timestamp    [note: 'auto_now=True — track profile edits']
+  is_active  boolean      [not null, default: true, note: 'soft-disable a user; mirrors Workspace.is_active']
+  // Note: `full_name` is a DERIVED property on the model (first_name + last_name),
+  //       NOT a stored column. Exposed via SerializerMethodField when needed.
+  // Standalone domain table — coexists with Django's auth_user but does NOT link to it.
+  // No password/username/last_login: auth is out of scope (no SimpleJWT).
+}
+
+// ---- Workspace -------------------------------------------------------------
+
+Table workspaces {
+  id         uuid        [pk, note: 'uuid.uuid4, editable=False']
+  name       varchar(255) [not null]
+  owner_id   uuid        [not null, note: 'FK -> users, on_delete=CASCADE']
+  is_active  boolean     [not null, default: true]
+  created_at timestamp   [note: 'auto_now_add=True']
+  // + description text       (blank) — what the workspace is for
+  // + updated_at  timestamp  (auto_now)
+}
+
+Ref: workspaces.owner_id > users.id [delete: cascade]
+
+// ---- WorkspaceMember -------------------------------------------------------
+
+Table workspace_members {
+  id           uuid     [pk, note: 'uuid.uuid4, editable=False']
+  workspace_id uuid     [not null, note: 'FK -> workspaces, on_delete=CASCADE']
+  user_id      uuid     [not null, note: 'FK -> users, on_delete=CASCADE']
+  role         workspace_member_role [not null]
+  joined_at    timestamp [note: 'auto_now_add=True']
+  // + invited_by_id uuid (FK -> users, SET_NULL) — who added this member
+
+  indexes {
+    (workspace_id, user_id) [unique, name: 'unique_workspace_member']
+  }
+}
+
+Ref: workspace_members.workspace_id > workspaces.id [delete: cascade]
+Ref: workspace_members.user_id      > users.id      [delete: cascade]
+
+// ---- Document --------------------------------------------------------------
+
+Table documents {
+  id           uuid     [pk, note: 'uuid.uuid4, editable=False']
+  title        varchar(255) [not null]
+  content      text
+  workspace_id uuid     [not null, note: 'FK -> workspaces, on_delete=CASCADE']
+  created_by_id uuid    [note: 'FK -> users, on_delete=SET_NULL, null=True']
+  status       document_status [not null]
+  updated_at   timestamp [note: 'auto_now=True']
+  // + created_at timestamp (auto_now_add) — brief only lists updated_at; created_at is usually wanted too
+}
+
+Ref: documents.workspace_id  > workspaces.id [delete: cascade]
+Ref: documents.created_by_id  > users.id      [delete: set null]
+
+// ---- DocumentVersion -------------------------------------------------------
+
+Table document_versions {
+  id             uuid     [pk, note: 'uuid.uuid4, editable=False']
+  document_id    uuid     [not null, note: "FK -> documents, CASCADE, related_name='versions'"]
+  content        text     [note: 'snapshot of content at save time']
+  version_number int      [not null, note: 'PositiveInteger; document.versions.count() + 1']
+  saved_by_id    uuid     [note: 'FK -> users, on_delete=SET_NULL, null=True']
+  saved_at       timestamp [note: 'auto_now_add=True']
+  // + title varchar(255) — snapshot the title too, so a version is fully self-contained
+}
+
+Ref: document_versions.document_id > documents.id [delete: cascade]
+Ref: document_versions.saved_by_id > users.id     [delete: set null]
+
+// ---- Comment (self-referential for threads) --------------------------------
+
+Table comments {
+  id          uuid      [pk, note: 'uuid.uuid4, editable=False']
+  document_id uuid      [not null, note: 'FK -> documents, on_delete=CASCADE']
+  author_id   uuid      [note: 'FK -> users, on_delete=SET_NULL, null=True']
+  content     text      [not null]
+  parent_id   uuid      [note: "FK -> self, null/blank, SET_NULL, related_name='replies'"]
+  created_at  timestamp [note: 'auto_now_add=True']
+  // + updated_at timestamp (auto_now) + is_edited boolean — for edited comments
+}
+
+Ref: comments.document_id > documents.id [delete: cascade]
+Ref: comments.author_id   > users.id     [delete: set null]
+Ref: comments.parent_id   > comments.id  [delete: set null]
+
+// ---- Tag + M2M join to Document --------------------------------------------
+
+Table tags {
+  id   uuid         [pk, note: 'uuid.uuid4, editable=False']
+  name varchar(100) [unique, not null]
+  // + color varchar(7) — hex color for UI grouping
+  // + created_at timestamp (auto_now_add)
+}
+
+// Django auto-creates this join table for ManyToManyField(Document) on Tag.
+// related_name='tags', so doc.tags / tag.documents both work.
+Table document_tags {
+  id          uuid [pk]
+  tag_id      uuid [not null]
+  document_id uuid [not null]
+
+  indexes {
+    (tag_id, document_id) [unique]
+  }
+}
+
+Ref: document_tags.tag_id      > tags.id      [delete: cascade]
+Ref: document_tags.document_id > documents.id [delete: cascade]
+
+// ---- AuditLog --------------------------------------------------------------
+
+Table audit_logs {
+  id         uuid      [pk, note: 'uuid.uuid4, editable=False']
+  actor_id   uuid      [note: 'FK -> users, on_delete=SET_NULL, null=True']
+  action     varchar(50) [note: "e.g. 'created', 'updated'"]
+  model_name varchar(100) [note: "e.g. 'Document'"]
+  object_id  varchar(100) [note: 'UUID stored as string']
+  timestamp  timestamp [note: 'auto_now_add=True']
+  // + changes jsonb — store a diff of what changed
+  // + ip_address varchar(45) — request origin
+}
+
+Ref: audit_logs.actor_id > users.id [delete: set null]

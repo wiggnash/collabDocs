@@ -1,6 +1,6 @@
 # PRD: CollabDocs API Backend
 
-> Source: `docs/project_brief.md`. This PRD restates the brief from the user's perspective and records the implementation, verification, and scope decisions for the build. Stack: Django + Django REST Framework + PostgreSQL, managed with `uv`. API-only; Postman is the client.
+> Source: `docs/project_brief.md`. This PRD restates the brief from the user's perspective and records the implementation, verification, and scope decisions for the build. Stack: Django + Django REST Framework + PostgreSQL, managed with `uv`. API-only; Postman is the client. (Database: **SQLite for early development, PostgreSQL for submission** — switched purely via `DATABASE_URL` in `.env`; see Implementation Decisions → Configuration.)
 
 ## Problem Statement
 
@@ -69,6 +69,17 @@ A custom request-logging middleware prints method, path, status, and duration fo
 - **Collaboration guardrails for the multi-app choice:** (a) cross-app FKs reference models by string (`'workspaces.Workspace'`) to avoid import-ordering issues; (b) each app has its own `migrations/` folder, which reduces (but doesn't eliminate) migration merge conflicts — coordinate on who edits which app; (c) keep naming/conventions consistent across apps since two people are building them; (d) the request-logging middleware and any shared utilities live in a neutral location (the `config`/project package or a dedicated `common` app), not inside a domain app.
 - `DefaultRouter` wires all `ModelViewSet`s under `/api/`. Custom endpoints are `@action` methods on the relevant viewset (not separate `APIView`s).
 
+### Authentication (decision: none — no SimpleJWT)
+- **Decision: build with NO authentication layer — no `djangorestframework-simplejwt`, no login, no tokens, no sessions.** This is a deliberate, recorded choice, made after weighing the alternative of adding SimpleJWT.
+- **Why no auth:**
+  - **Rubric.** All 100 marks map to Models, Serializers, ViewSets, QuerySets, Aggregations, Transactions, Middleware/Signals, and Code Quality. Authentication is *not* a graded item — effort spent on it earns nothing on the scorecard.
+  - **The brief is silent on auth and never mentions JWT/SimpleJWT/tokens** (verified by grep over `project_brief.md`), and its `User` spec has **no `password`**, `email` as `CharField` (not `EmailField`), and no `username` — i.e. a plain domain record, not an authenticatable account.
+  - **Adding auth would fight the brief's design.** Endpoints take the actor in the request body (`created_by`, `author`, `saved_by`); real JWT would derive the actor from `request.user`, forcing a rewrite of serializers/flows away from the graded spec.
+  - **It would force a migration-level change** (`AUTH_USER_MODEL` / `AbstractBaseUser`, set before the first migration), risking the 20-mark Models section whose field spec we'd be contradicting.
+- **Identity model we use instead (client-declared actor):** there is no `request.user`. The caller (Postman) is trusted and **passes the acting user's UUID in the request body**. Roles (`WorkspaceMember.role`) are **stored and displayed but never enforced** at the request level. This is a single-tenant / trusted-client simulation of collaboration — it models the *data* of access control without the *enforcement*.
+- **`User` stays a plain model** (`class User(models.Model)`), separate from Django's `django.contrib.auth` user, exactly per the brief's field list.
+- **If revisited later:** real auth (SimpleJWT) is a valid *learning extension* but must live on a separate `feature/jwt-auth` branch **after** the core build is verified — never on the submission branch — since it changes the user model and the actor-resolution flow.
+
 ### Models (8)
 - All PKs: `UUIDField(primary_key=True, default=uuid.uuid4, editable=False)`.
 - `User`: `email` and `phone` as `CharField` with `unique=True` (email is `CharField`, **not** `EmailField`, per brief).
@@ -105,6 +116,10 @@ A custom request-logging middleware prints method, path, status, and duration fo
 
 ### Configuration
 - **Env library:** `django-environ` is the chosen tool for reading `.env` (decision recorded; installed via `uv add django-environ`). Use `environ.Env` in `settings.py` — `env.db()` to build `DATABASES` from a `DATABASE_URL`, and `env.bool('DEBUG', default=False)` to cast booleans safely (avoids the `os.environ.get('DEBUG') == "False"` truthiness footgun).
+- **Database — SQLite for dev, PostgreSQL for submission (decision):** to move fast in early development we run on **SQLite** (zero-setup, single file, no server to provision), then switch to **PostgreSQL** once models and endpoints stabilize. Because `DATABASES` is built from `DATABASE_URL` via `env.db()`, switching is a `.env` change only — **no code change**:
+  - Dev: `DATABASE_URL=sqlite:///db.sqlite3`
+  - Prod/submission: `DATABASE_URL=postgres://USER:PASSWORD@HOST:PORT/NAME`
+  - `.env.example` documents both forms. `psycopg[binary]` stays a dependency throughout so Postgres works the moment we switch. **Before submission, run migrations from scratch and re-run the full Postman pass against PostgreSQL** — the rubric and brief expect Postgres, and SQLite differs in some constraint/transaction behaviors (e.g. deferred constraint checking, type affinity), so the Postgres run is the authoritative verification.
 - PostgreSQL credentials from `.env` (never hardcoded). `.env.example` lists all required variables. `requirements.txt` pins all deps (in addition to `uv` lockfile) — generate before submission with `uv export --format requirements-txt --no-hashes -o requirements.txt`. README covers setup, running the server, and applying migrations. A Postman collection (`.json`) covering all 17 endpoints, organized into folders, is committed at the repo root.
 
 ## Testing Decisions
@@ -123,8 +138,10 @@ Per the brief and the user's choice, verification is **manual via Postman** — 
 
 ## Out of Scope
 
-- Any frontend / UI.
-- Authentication, authorization enforcement, sessions, or permission checks at the request level (roles are stored on `WorkspaceMember` but the brief does not require gating endpoints by them).
+> **Inference note:** the brief explicitly marks only the **frontend** as out of scope (`project_brief.md` line 4). The remaining items below are **our scoping decisions inferred from the brief**, not statements the brief makes. Most consequential: the brief is *silent* on authentication and even mentions "role-based permissions" (line 3), but defines no `password` field, no auth endpoints, and no requirement to gate endpoints by role — so we infer auth/authz enforcement is out of scope.
+
+- Any frontend / UI. *(explicitly out of scope per brief)*
+- **Authentication & authorization (team decision — no SimpleJWT).** No login, tokens, sessions, or request-level permission checks. The brief is silent on auth (mentions "role-based permissions" but defines no `password` field, no auth endpoints, no role-gating); we have explicitly chosen to build without it. The actor is passed in the request body; roles are stored but not enforced. Full rationale in *Implementation Decisions → Authentication*.
 - An automated test suite (unit/integration), CI, linting/formatting gates.
 - Pagination, rate limiting, throttling, caching.
 - Soft-delete / restore flows beyond the `is_active` flag and `SET_NULL` behaviors specified.

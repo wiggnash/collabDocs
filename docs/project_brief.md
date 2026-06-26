@@ -162,75 +162,66 @@ Tags & Audit Logs
 | `POST` | `/api/tags/`       | Create a tag                                        | `ModelSerializer`, unique constraint handling  |
 | `GET`  | `/api/audit-logs/` | List audit logs filtered by actor ID and date range | `filter()`, `__gte`, `__lte`, query parameters |
 
-3.1  Middleware requirement
+#### 3.1  Middleware requirement
 
 Implement a custom request logging middleware that prints the following for every request:
-HTTP method (GET, POST, PUT, DELETE)
-Endpoint path
-Response status code
-Time taken in milliseconds
-Register it in settings.py MIDDLEWARE list. A Django middleware is a class with init(self, get_response) and call(self, request) methods. Record the time before calling get_response(request) and after, then print the difference.
+- HTTP method (GET, POST, PUT, DELETE)
+- Endpoint path
+- Response status code
+- Time taken in milliseconds
 
+Register it in settings.py MIDDLEWARE list. 
+A Django middleware is a class with init(self, get_response) and call(self, request) methods. Record the time before calling get_response(request) and after, then print the difference.
 
+### 4. Technical Requirements
 
-4. Technical Requirements
+#### 4.1  Models and database
 
-4.1  Models and database
+- All PKs: UUIDField with uuid.uuid4 and editable=False
+- Use TextChoices for all enums - no raw string values
+- UniqueConstraint on WorkspaceMember (workspace, user) in the model's Meta class
+- ManyToManyField between Tag and Document
+- Self-referential ForeignKey on Comment for threaded replies
+- All migrations committed and applying cleanly from scratch
 
-All PKs: UUIDField with uuid.uuid4 and editable=False
-Use TextChoices for all enums - no raw string values
-UniqueConstraint on WorkspaceMember (workspace, user) in the model's Meta class
-ManyToManyField between Tag and Document
-Self-referential ForeignKey on Comment for threaded replies
-All migrations committed and applying cleanly from scratch
+#### 4.2  Serializers and views
 
+- Use ModelViewSet wherever CRUD is standard
+- Use @action decorators for all non-standard endpoints (stats, summary, tags, versions)
+- Implement at least two SerializerMethodField uses across the project
+- Write custom validation in at least two serializers
+- All error responses: meaningful message, correct HTTP code (400, 404, 409 where appropriate)
+- Do not use raw APIView where ModelViewSet is appropriate
 
-4.2  Serializers and views
+#### 4.3  QuerySets and filtering
 
-Use ModelViewSet wherever CRUD is standard
-Use @action decorators for all non-standard endpoints (stats, summary, tags, versions)
-Implement at least two SerializerMethodField uses across the project
-Write custom validation in at least two serializers
-All error responses: meaningful message, correct HTTP code (400, 404, 409 where appropriate)
-Do not use raw APIView where ModelViewSet is appropriate
+- Use select_related on every endpoint returning nested user, workspace, or document data
+- Use filter() with lookups (gte, lte, in, __icontains) on all list endpoints that support filtering
+- Use Q objects for OR filtering on the document list endpoint
+- Use aggregate() or annotate() with Count in at least 3 endpoints
+- Use values_list() where only IDs are needed
 
+#### 4.4  Transactions and data integrity
 
+- Wrap workspace creation + member add in a single transaction.atomic()
+- Wrap document save + version creation in a single transaction.atomic()
+- AuditLog must be written inside the same atomic block as the action it records
+- Handle DoesNotExist and IntegrityError explicitly, catch IntegrityError on WorkspaceMember creation to return a 409 when a duplicate member is added
 
-4.3  QuerySets and filtering
+#### 4.5  Middleware and signals
 
-Use select_related on every endpoint returning nested user, workspace, or document data
-Use filter() with lookups (gte, lte, in, __icontains) on all list endpoints that support filtering
-Use Q objects for OR filtering on the document list endpoint
-Use aggregate() or annotate() with Count in at least 3 endpoints
-Use values_list() where only IDs are needed
+- Custom request logging middleware as described in section 3.1, registered in settings.py
+- post_save signal on Document, write it in signals.py, connect it in AppConfig.ready(). Use instance._state.adding to detect create vs update. Write an AuditLog entry for each
+- The signal must record: actor (created_by), action ('created' or 'updated'), model_name ('Document'), object_id
 
+#### 4.6  Project setup
 
-
-4.4  Transactions and data integrity
-
-Wrap workspace creation + member add in a single transaction.atomic()
-Wrap document save + version creation in a single transaction.atomic()
-AuditLog must be written inside the same atomic block as the action it records
-Handle DoesNotExist and IntegrityError explicitly, catch IntegrityError on WorkspaceMember creation to return a 409 when a duplicate member is added
-
-
-
-4.5  Middleware and signals
-
-Custom request logging middleware as described in section 3.1, registered in settings.py
-post_save signal on Document, write it in signals.py, connect it in AppConfig.ready(). Use instance._state.adding to detect create vs update. Write an AuditLog entry for each
-The signal must record: actor (created_by), action ('created' or 'updated'), model_name ('Document'), object_id
-
-
-
-4.6  Project setup
-
-PostgreSQL via .env, never hardcoded credentials
-requirements.txt with all dependencies pinned
-README.md with setup, how to run the server, how to apply migrations
-Postman collection (.json) committed to the repository root
-All 17 endpoints tested and working in Postman before submission.
-
+- PostgreSQL via .env, never hardcoded credentials
+  - **Dev note (our choice):** during early development we use **SQLite** (zero-setup, file-based) to move fast, then switch to **PostgreSQL** once the models/endpoints are stable. The DB is selected via `.env` (`DATABASE_URL`) so no code changes are needed to switch. Final submission must run on PostgreSQL — confirm a clean `migrate` + Postman pass against Postgres before submitting, since the rubric expects Postgres.
+- requirements.txt with all dependencies pinned
+- README.md with setup, how to run the server, how to apply migrations
+- Postman collection (.json) committed to the repository root
+- All 17 endpoints tested and working in Postman before submission.
 
 # Evaluation Rubric (100 Marks)
 
