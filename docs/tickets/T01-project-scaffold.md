@@ -21,12 +21,12 @@ The runnable Django + DRF project skeleton that every other ticket builds on. No
 
 ## Acceptance criteria
 
-- [ ] `uv sync` installs all dependencies from the lockfile.
-- [ ] `cp .env.example .env` + filling real values lets `uv run python manage.py runserver` start with no errors.
-- [ ] `uv run python manage.py migrate` connects to the configured DB successfully (Django's built-in tables apply) — against **SQLite** for dev.
-- [ ] Switching `DATABASE_URL` to a `postgres://…` value and re-running `migrate` applies cleanly against **PostgreSQL** with no code change (verify at least once before relying on Postgres for submission).
+- [x] `uv sync` installs all dependencies from the lockfile.
+- [x] `cp .env.example .env` + filling real values lets `uv run python manage.py runserver` start with no errors.
+- [x] `uv run python manage.py migrate` connects to the configured DB successfully (Django's built-in tables apply) — against **SQLite** for dev.
+- [x] Switching `DATABASE_URL` to a `postgres://…` value and re-running `migrate` applies cleanly against **PostgreSQL** with no code change (verify at least once before relying on Postgres for submission).
 - [ ] Hitting `/api/` returns the DRF browsable API root (empty router is fine).
-- [ ] No credentials appear anywhere in tracked source; `.env` is git-ignored, `.env.example` is committed.
+- [x] No credentials appear anywhere in tracked source; `.env` is git-ignored, `.env.example` is committed.
 
 ## User stories covered
 
