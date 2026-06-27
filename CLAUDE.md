@@ -31,7 +31,7 @@ CollabDocs — an **API-only** backend (no frontend; Postman is the client) for 
 ```bash
 # Setup
 uv sync                                  # install deps from pyproject.toml/uv.lock
-cp .env.example .env                     # then fill in real PostgreSQL credentials
+cp .env.example .env                     # dev: SQLite (DATABASE_URL=sqlite:///db.sqlite3); switch DATABASE_URL to postgres:// when required
 
 # Dependencies
 uv add <package>                         # add a dependency
