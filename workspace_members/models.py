@@ -1,7 +1,7 @@
 import uuid
 from django.db import models
 
-# Create your models here.
+
 class WorkspaceMember(models.Model):
     class Role(models.TextChoices):
         ADMIN = "admin", "Admin"
