@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     # apps
     'users',
     'workspaces',
-    'workspacemembers',
+    'workspace_members',
 ]
 
 MIDDLEWARE = [
