@@ -51,13 +51,13 @@ Table users {
 // ---- Workspace -------------------------------------------------------------
 
 Table workspaces {
-  id         uuid        [pk, note: 'uuid.uuid4, editable=False']
-  name       varchar(255) [not null]
-  owner_id   uuid        [not null, note: 'FK -> users, on_delete=CASCADE']
-  is_active  boolean     [not null, default: true]
-  created_at timestamp   [note: 'auto_now_add=True']
-  // + description text       (blank) — what the workspace is for
-  // + updated_at  timestamp  (auto_now)
+  id          uuid        [pk, note: 'uuid.uuid4, editable=False']
+  name        varchar(255) [not null]
+  description text         [note: 'blank=True (no null) — what the workspace is for']
+  owner_id    uuid        [not null, note: 'FK -> users, on_delete=CASCADE; related_name TBD']
+  is_active   boolean     [not null, default: true]
+  created_at  timestamp   [note: 'auto_now_add=True']
+  updated_at  timestamp   [note: 'auto_now=True — track workspace edits']
 }
 
 Ref: workspaces.owner_id > users.id [delete: cascade]
