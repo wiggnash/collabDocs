@@ -15,10 +15,10 @@ This is the simplest full slice — good warm-up for establishing serializer/vie
 
 ## Acceptance criteria
 
-- [ ] `POST /api/users/` creates a user and returns 201 with the serialized user (UUID id present).
-- [ ] Duplicate email or phone returns 400 with a meaningful message.
-- [ ] `GET /api/users/{id}/` returns the user; unknown id returns 404.
-- [ ] Endpoints registered via `DefaultRouter`.
+- [x] `POST /api/users/` creates a user and returns 201 with the serialized user (UUID id present).
+- [x] Duplicate email or phone returns 400 with a meaningful message.
+- [x] `GET /api/users/{id}/` returns the user; unknown id returns 404.
+- [x] Endpoints registered via `DefaultRouter`.
 
 ## User stories covered
 
