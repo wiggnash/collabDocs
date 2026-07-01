@@ -15,13 +15,13 @@ A `ModelViewSet` for workspaces plus its custom member and summary endpoints.
 
 ## Acceptance criteria
 
-- [ ] Creating a workspace returns 201 and the owner exists as an `admin` member.
-- [ ] If member creation fails, the workspace is **not** persisted (demonstrable rollback).
-- [ ] Workspace detail includes a correct member count (annotated, not computed in Python).
-- [ ] Adding a duplicate member returns 409; invalid role returns 400; unknown workspace/user returns 404.
-- [ ] Member list uses `select_related` and shows each member's role.
+- [x] Creating a workspace returns 201 and the owner exists as an `admin` member.
+- [x] If member creation fails, the workspace is **not** persisted (demonstrable rollback).
+- [x] Workspace detail includes a correct member count (annotated, not computed in Python).
+- [x] Adding a duplicate member returns 409; invalid role returns 400; unknown workspace/user returns 404.
+- [x] Member list uses `select_related` and shows each member's role.
 - [ ] Summary returns correct document count, member count, and total comment count.
-- [ ] Custom endpoints use `@action`; CRUD uses `ModelViewSet`.
+- [x] Custom endpoints use `@action`; CRUD uses `ModelViewSet`.
 
 ## User stories covered
 
