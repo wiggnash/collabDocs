@@ -33,6 +33,12 @@ class Document(models.Model):
 
     class Meta:
         ordering = ["-updated_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["workspace", "title"],
+                name="unique_document_title_per_workspace",
+            )
+        ]
 
     def __str__(self):
         return f"{self.title}"
