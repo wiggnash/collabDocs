@@ -57,6 +57,8 @@ INSTALLED_APPS = [
     'users',
     'workspaces',
     'workspace_members',
+    'documents',
+    'document_versions',
 ]
 
 MIDDLEWARE = [
