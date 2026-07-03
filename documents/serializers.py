@@ -49,3 +49,11 @@ class DocumentUpdateSerializer(DocumentSerializer):
     class Meta(DocumentSerializer.Meta):
         fields = DocumentSerializer.Meta.fields + ["saved_by"]
         read_only_fields = DocumentSerializer.Meta.read_only_fields + ["created_by"]
+
+    def validate(self, attrs):
+        if "saved_by" not in attrs:
+            raise serializers.ValidationError(
+                {"saved_by": "This field is required when updating a document."}
+            )
+
+        return attrs
