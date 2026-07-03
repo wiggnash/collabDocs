@@ -14,11 +14,11 @@ This is one of the two required `SerializerMethodField` uses for the rubric (the
 
 ## Acceptance criteria
 
-- [ ] Posting a comment with no parent creates a top-level comment (201).
-- [ ] Posting with a valid `parent` creates a reply; a parent on a different document returns 400.
-- [ ] `GET /api/comments/?document={id}` returns the document's comments threaded (replies nested under parents via `SerializerMethodField`).
-- [ ] List uses `select_related` for author/document.
-- [ ] Deleting a comment's author leaves the comment with a null author (SET_NULL behavior holds).
+- [x] Posting a comment with no parent creates a top-level comment (201).
+- [x] Posting with a valid `parent` creates a reply; a parent on a different document returns 400.
+- [x] `GET /api/comments/?document={id}` returns the document's comments threaded (replies nested under parents via `SerializerMethodField`).
+- [x] List uses `select_related` for author/document.
+- [x] Deleting a comment's author leaves the comment with a null author (SET_NULL behavior holds).
 
 ## User stories covered
 
