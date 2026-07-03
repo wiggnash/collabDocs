@@ -15,11 +15,11 @@ The write side of the Documents `ModelViewSet`. Every save snapshots content int
 
 ## Acceptance criteria
 
-- [ ] Creating a document returns 201 and creates exactly one version with `version_number == 1`.
-- [ ] Updating a document creates a new version with the next number; previous versions are untouched.
-- [ ] Document + version creation is atomic — a forced failure persists neither (this is the required demo rollback scenario).
-- [ ] `create()` and `update()` are explicitly overridden on the viewset.
-- [ ] Unknown document id returns 404.
+- [x] Creating a document returns 201 and creates exactly one version with `version_number == 1`.
+- [x] Updating a document creates a new version with the next number; previous versions are untouched.
+- [x] Document + version creation is atomic — a forced failure persists neither (this is the required demo rollback scenario).
+- [x] `create()` and `update()` are explicitly overridden on the viewset.
+- [x] Unknown document id returns 404.
 
 ## User stories covered
 

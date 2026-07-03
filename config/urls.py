@@ -21,6 +21,7 @@ from django.urls import include, path
 api_urlpatterns = [
     path('', include('users.urls')),
     path('', include('workspaces.urls')),
+    path('', include('documents.urls')),
 ]
 
 urlpatterns = [
