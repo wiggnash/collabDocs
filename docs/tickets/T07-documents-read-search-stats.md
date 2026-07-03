@@ -17,10 +17,11 @@ The read/aggregation side of the Documents viewset, plus the tag-attach action.
 
 ## Acceptance criteria
 
-- [ ] `GET /api/documents/?search=<term>` returns docs matching the term in title OR content (Q-object OR filter).
-- [ ] Filtering by `status`, `workspace`, and `tag` works via query params.
-- [ ] List endpoint uses `select_related` (no N+1 on workspace/created_by).
-- [ ] `versions/` returns all versions in version-number order.
+- [x] `GET /api/documents/?search=<term>` returns docs matching the term in title OR content (Q-object OR filter).
+- [x] Filtering by `status` and `workspace` works via query params.
+- [ ] Filtering by `tag` works via query params (`tags__name`) — **blocked: `Tag` model / `tags` M2M not built yet.**
+- [x] List endpoint uses `select_related` (no N+1 on workspace/created_by).
+- [x] `versions/` returns all versions in version-number order.
 - [ ] `stats/` returns correct version, comment, and contributor counts (aggregation, not Python loops).
 - [ ] `tags/` attaches the given tags and they appear on subsequent reads / tag filtering.
 
