@@ -20,7 +20,7 @@ A `ModelViewSet` for workspaces plus its custom member and summary endpoints.
 - [x] Workspace detail includes a correct member count (annotated, not computed in Python).
 - [x] Adding a duplicate member returns 409; invalid role returns 400; unknown workspace/user returns 404.
 - [x] Member list uses `select_related` and shows each member's role.
-- [ ] Summary returns correct document count, member count, and total comment count.
+- [x] Summary returns correct document count, member count, and total comment count.
 - [x] Custom endpoints use `@action`; CRUD uses `ModelViewSet`.
 
 ## User stories covered

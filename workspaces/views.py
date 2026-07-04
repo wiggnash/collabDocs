@@ -59,3 +59,15 @@ class WorkspaceViewSet(viewsets.ModelViewSet):
         members = workspace.memberships.select_related("user")
         serializer = WorkspaceMemberSerializer(members, many=True)
         return Response(serializer.data)
+
+    @action(detail=True, methods=["get"], url_path="summary")
+    def summary(self, request, pk=None):
+        workspace = self.get_object()
+
+        summary = Workspace.objects.filter(pk=workspace.pk).aggregate(
+            document_count=Count("documents", distinct=True),
+            member_count=Count("memberships", distinct=True),
+            comment_count=Count("documents__comments", distinct=True),
+        )
+
+        return Response(summary)
