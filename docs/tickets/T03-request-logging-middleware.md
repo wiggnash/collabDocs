@@ -15,11 +15,11 @@ This ticket is independent of the data models, so it's the ideal early parallel 
 
 ## Acceptance criteria
 
-- [ ] Middleware class implements `__init__` and `__call__` correctly.
-- [ ] Registered in `settings.MIDDLEWARE`.
-- [ ] Every request to any endpoint prints a console line containing method, path, status code, and duration in ms.
-- [ ] Works for GET, POST, PUT, and DELETE.
-- [ ] Verified visible in the console (this is one of the required demo-video items).
+- [x] Middleware class implements `__init__` and `__call__` correctly.
+- [x] Registered in `settings.MIDDLEWARE`.
+- [x] Every request to any endpoint prints a console line containing method, path, status code, and duration in ms.
+- [x] Works for GET, POST, PUT, and DELETE.
+- [x] Verified visible in the console (this is one of the required demo-video items).
 
 ## User stories covered
 
