@@ -14,9 +14,9 @@ Note: *attaching* tags to documents lives in T07 (`POST /api/documents/{id}/tags
 
 ## Acceptance criteria
 
-- [ ] `POST /api/tags/` creates a tag and returns 201.
-- [ ] Duplicate tag name returns a clear, handled error (not a 500).
-- [ ] Registered via `DefaultRouter`.
+- [x] `POST /api/tags/` creates a tag and returns 201.
+- [x] Duplicate tag name returns a clear, handled error (not a 500).
+- [x] Registered via `DefaultRouter`.
 
 ## User stories covered
 

@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'documents',
     'document_versions',
     'comments',
+    'tags',
 ]
 
 MIDDLEWARE = [

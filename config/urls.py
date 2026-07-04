@@ -23,6 +23,7 @@ api_urlpatterns = [
     path('', include('workspaces.urls')),
     path('', include('documents.urls')),
     path('', include('comments.urls')),
+    path('', include('tags.urls')),
 ]
 
 urlpatterns = [
