@@ -6,6 +6,7 @@ from users.models import User
 
 
 class DocumentSerializer(serializers.ModelSerializer):
+    tags = serializers.SlugRelatedField(slug_field="name", many=True, read_only=True)
 
     class Meta:
         model = Document
@@ -16,6 +17,7 @@ class DocumentSerializer(serializers.ModelSerializer):
             "status",
             "workspace",
             "created_by",
+            "tags",
             "is_active",
             "created_at",
             "updated_at",
@@ -57,3 +59,20 @@ class DocumentUpdateSerializer(DocumentSerializer):
             )
 
         return attrs
+
+
+class DocumentTagAttachSerializer(serializers.Serializer):
+    tags = serializers.ListField(
+        child=serializers.CharField(max_length=100),
+        allow_empty=False,
+    )
+
+    def validate_tags(self, value):
+        normalized = []
+        for name in value:
+            cleaned = name.strip().lower()
+            if not cleaned:
+                raise serializers.ValidationError("Tag names cannot be blank.")
+            if cleaned not in normalized:
+                normalized.append(cleaned)
+        return normalized

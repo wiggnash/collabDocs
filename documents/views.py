@@ -3,8 +3,9 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
-from django.db.models import Q
+from django.db.models import Q, Count
 
+from tags.models import Tag
 from document_versions.models import DocumentVersion
 from document_versions.serializers import DocumentVersionSerializer
 
@@ -12,6 +13,7 @@ from .models import Document
 from .serializers import (
     DocumentCreateSerializer,
     DocumentSerializer,
+    DocumentTagAttachSerializer,
     DocumentUpdateSerializer,
 )
 
@@ -35,6 +37,10 @@ class DocumentViewSet(viewsets.ModelViewSet):
         search = params.get("search")
         if search:
             qs = qs.filter(Q(title__icontains=search) | Q(content__icontains=search))
+
+        tag = params.get("tag")
+        if tag:
+            qs = qs.filter(tags__name=tag).distinct()
 
         return qs
 
@@ -96,3 +102,35 @@ class DocumentViewSet(viewsets.ModelViewSet):
         serializer = DocumentVersionSerializer(versions, many=True)
 
         return Response(serializer.data)
+
+    @action(detail=True, methods=["get"], url_path="stats")
+    def stats(self, request, pk=None):
+        document = self.get_object()
+
+        version_stats = document.versions.aggregate(
+            version_count=Count("id"),
+            contributor_count=Count("saved_by", distinct=True),
+        )
+
+        comment_count = document.comments.count()
+
+        return Response(
+            {
+                "version_count": version_stats["version_count"],
+                "comment_count": comment_count,
+                "contributor_count": version_stats["contributor_count"],
+            }
+        )
+
+    @action(detail=True, methods=["post"], url_path="tags")
+    def tags(self, request, pk=None):
+        document = self.get_object()
+
+        serializer = DocumentTagAttachSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        tag_names = serializer.validated_data["tags"]
+
+        tags = [Tag.objects.get_or_create(name=name)[0] for name in tag_names]
+        document.tags.add(*tags)
+
+        return Response(DocumentSerializer(document).data, status=status.HTTP_200_OK)
