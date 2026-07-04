@@ -13,10 +13,10 @@ Automatic audit logging of document changes via a `post_save` signal, plus a rea
 
 ## Acceptance criteria
 
-- [ ] Creating a document writes an `AuditLog` row with action `created`.
-- [ ] Updating a document writes an `AuditLog` row with action `updated`.
-- [ ] Signal is connected in `AppConfig.ready()` (not imported ad-hoc).
-- [ ] A rolled-back document save leaves no audit row (atomic guarantee — required demo item).
+- [x] Creating a document writes an `AuditLog` row with action `created`.
+- [x] Updating a document writes an `AuditLog` row with action `updated`.
+- [x] Signal is connected in `AppConfig.ready()` (not imported ad-hoc).
+- [x] A rolled-back document save leaves no audit row (atomic guarantee — required demo item).
 - [ ] `GET /api/audit-logs/?actor=<id>&start=<date>&end=<date>` filters correctly via `__gte`/`__lte`.
 
 ## User stories covered
