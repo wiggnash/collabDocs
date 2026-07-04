@@ -34,14 +34,14 @@ With one model per app, each app owns its own `migrations/` folder. That **remov
 
 ## Acceptance criteria
 
-- [ ] All 8 models defined with UUID PKs and the exact field types/relations above, **one model per app** (8 apps).
-- [ ] All 8 apps registered in `INSTALLED_APPS`.
-- [ ] Cross-app FKs use **string references** (`'app_label.Model'`), not direct imports.
-- [ ] `role` and `status` use `TextChoices` (no raw string literals).
-- [ ] `WorkspaceMember` has the `UniqueConstraint` on `(workspace, user)` in `Meta`.
-- [ ] `Tag.documents` is a `ManyToManyField`; `Comment.parent` is a self-referential FK.
-- [ ] `makemigrations` produces a clean initial migration **per app**; a single `migrate` applies the full graph from an empty DB with no errors.
-- [ ] Models are importable and creatable in `manage.py shell` (quick smoke check).
+- [x] All 8 models defined with UUID PKs and the exact field types/relations above, **one model per app** (8 apps).
+- [x] All 8 apps registered in `INSTALLED_APPS`.
+- [x] Cross-app FKs use **string references** (`'app_label.Model'`), not direct imports.
+- [x] `role` and `status` use `TextChoices` (no raw string literals).
+- [x] `WorkspaceMember` has the `UniqueConstraint` on `(workspace, user)` in `Meta`.
+- [x] `Tag.documents` is a `ManyToManyField`; `Comment.parent` is a self-referential FK.
+- [x] `makemigrations` produces a clean initial migration **per app**; a single `migrate` applies the full graph from an empty DB with no errors.
+- [x] Models are importable and creatable in `manage.py shell` (quick smoke check).
 
 ## User stories covered
 
