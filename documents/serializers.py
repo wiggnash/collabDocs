@@ -62,14 +62,6 @@ class DocumentUpdateSerializer(DocumentSerializer):
 
 
 class DocumentTagAttachSerializer(serializers.Serializer):
-    """Input contract for POST /api/documents/{id}/tags/.
-
-    Not a ModelSerializer — we're not creating a Document, just validating a
-    list of tag names to attach. `ListField` enforces the shape; the
-    per-field validator normalizes names (trim + lowercase) so they match how
-    tags are stored, and de-duplicates within the request.
-    """
-
     tags = serializers.ListField(
         child=serializers.CharField(max_length=100),
         allow_empty=False,
