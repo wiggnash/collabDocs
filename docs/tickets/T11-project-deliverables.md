@@ -15,10 +15,10 @@ The non-code artifacts required for submission. Best done incrementally as endpo
 
 ## Acceptance criteria
 
-- [ ] README covers setup, run, and migrate steps and links the demo video.
-- [ ] `.env.example` lists every required variable; real `.env` is git-ignored.
-- [ ] `requirements.txt` pins all deps; a fresh clone installs and runs cleanly.
-- [ ] Migrations apply from scratch on an empty database.
+- [x] README covers setup, run, and migrate steps and links the demo video.
+- [x] `.env.example` lists every required variable; real `.env` is git-ignored.
+- [x] `requirements.txt` pins all deps; a fresh clone installs and runs cleanly.
+- [x] Migrations apply from scratch on an empty database.
 - [ ] Postman collection at repo root covers all 17 endpoints with sample bodies, folder-organized.
 - [ ] Demo video recorded and linked, covering all four required scenarios.
 
