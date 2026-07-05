@@ -1,0 +1,801 @@
+{
+  "info": {
+    "_postman_id": "43ed1ff9-47b6-4b21-9274-bfb7a1b009fb",
+    "name": "CollabDocs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "34332325"
+  },
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Create User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"first_name\": \"Dinesh\",\n    \"last_name\": \"Kumar\",\n    \"email\": \"dinesh.kumar@gmail.com\",\n    \"phone\": 638246\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/users/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retrieve User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/96e5f568-3f60-41fe-975a-cdeace8850c1/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "96e5f568-3f60-41fe-975a-cdeace8850c1",
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Workspaces",
+      "item": [
+        {
+          "name": "Create Workspace",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Engineering\",\n  \"description\": \"Team docs\",\n  \"owner\": \"3885a3ee-ca1b-4f8b-92f9-b3ea307cd95b\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/workspaces/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "workspaces",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retrive Workspace",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"CollabDocs\",\n    \"description\": \"To Colab with team mates\",\n    \"owner\": \"351e642d-a219-4dfd-aad1-65d8d5463596\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/workspaces/d40ded42-1423-4c8f-8171-b31318abafd6/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "workspaces",
+                "d40ded42-1423-4c8f-8171-b31318abafd6",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Member to the workspace",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": \"98ed2bbe229f4cd1ade39e8c4a26456e\",\n    \"role\": \"engineer\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/workspaces/d40ded42-1423-4c8f-8171-b31318abafd6/members/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "workspaces",
+                "d40ded42-1423-4c8f-8171-b31318abafd6",
+                "members",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get members of the workspace",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": \"98ed2bbe229f4cd1ade39e8c4a26456e\",\n    \"role\": \"editor\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/workspaces/1cda8958-2896-41d3-a66d-8adeb77c3353/members/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "workspaces",
+                "1cda8958-2896-41d3-a66d-8adeb77c3353",
+                "members",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Workspace Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/workspaces/1cda8958-2896-41d3-a66d-8adeb77c3353/summary/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "workspaces",
+                "1cda8958-2896-41d3-a66d-8adeb77c3353",
+                "summary",
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Documents",
+      "item": [
+        {
+          "name": "Create Document",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"second document in this workspace\",\n    \"content\": \"this is the second document which im creating in this workspace\",\n    \"status\": \"draft\",\n    \"workspace\": \"1cda8958-2896-41d3-a66d-8adeb77c3353\",\n    \"created_by\": \"351e642d-a219-4dfd-aad1-65d8d5463596\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/documents/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "documents",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Document Content",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"content\": \"this is my first document in this workspace..updating this right now\",\n    \"saved_by\": \"351e642d-a219-4dfd-aad1-65d8d5463596\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/documents/6dd5b56f-4fc6-4a32-a912-8a38a241289c/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "documents",
+                "6dd5b56f-4fc6-4a32-a912-8a38a241289c",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Document Search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/documents/?search=First",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "documents",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "First"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Document Versions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/documents/6dd5b56f-4fc6-4a32-a912-8a38a241289c/versions/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "documents",
+                "6dd5b56f-4fc6-4a32-a912-8a38a241289c",
+                "versions",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Document Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/documents/6dd5b56f-4fc6-4a32-a912-8a38a241289c/stats/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "documents",
+                "6dd5b56f-4fc6-4a32-a912-8a38a241289c",
+                "stats",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Document tags",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/documents/6dd5b56f-4fc6-4a32-a912-8a38a241289c/tags/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "documents",
+                "6dd5b56f-4fc6-4a32-a912-8a38a241289c",
+                "tags",
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Comments",
+      "item": [
+        {
+          "name": "Create a comment",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"document\": \"6dd5b56f-4fc6-4a32-a912-8a38a241289c\",\n  \"author\": \"351e642d-a219-4dfd-aad1-65d8d5463596\",\n  \"content\": \"This is a top-level comment\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/comments/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "comments",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Comments of Document",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/comments/?document=6dd5b56f-4fc6-4a32-a912-8a38a241289c",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "comments",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "document",
+                  "value": "6dd5b56f-4fc6-4a32-a912-8a38a241289c"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tags & Audit Logs",
+      "item": [
+        {
+          "name": "Create Tag",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/tags/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "tags",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/audit-logs/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "audit-logs",
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Test and Demo",
+      "item": [
+        {
+          "name": "Users",
+          "item": [
+            {
+              "name": "Create User 1",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"first_name\": \"Dinesh\",\n    \"last_name\": \"Kumar\",\n    \"email\": \"dinesh.kumar@gmail.com\",\n    \"phone\": 638246\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/users/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "users",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create user 2",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"first_name\": \"Dinesh\",\n    \"last_name\": \"Kumar\",\n    \"email\": \"dinesh.kumar@gmail.com\",\n    \"phone\": 638246\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/users/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "users",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create Same User",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"first_name\": \"Dinesh\",\n    \"last_name\": \"Kumar\",\n    \"email\": \"dinesh.kumar@gmail.com\",\n    \"phone\": 638246\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/users/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "users",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create User with Invalid Phone number",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"first_name\": \"Dinesh\",\n    \"last_name\": \"Kumar\",\n    \"email\": \"dinesh.kumar@gmail.com\",\n    \"phone\": 638246\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/users/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "users",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Workspaces",
+          "item": [
+            {
+              "name": "Create Workspace",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/workspaces/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "workspaces",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Retrive Workspace",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"CollabDocs\",\n    \"description\": \"To Colab with team mates\",\n    \"owner\": \"351e642d-a219-4dfd-aad1-65d8d5463596\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/workspaces/d40ded42-1423-4c8f-8171-b31318abafd6/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "workspaces",
+                    "d40ded42-1423-4c8f-8171-b31318abafd6",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Retrive Workspace With Wrong ID",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"CollabDocs\",\n    \"description\": \"To Colab with team mates\",\n    \"owner\": \"351e642d-a219-4dfd-aad1-65d8d5463596\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/workspaces/d40ded42-1423-4c8f-8171-b31318abafd6/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "workspaces",
+                    "d40ded42-1423-4c8f-8171-b31318abafd6",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Add Member to the workspace",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"user\": \"98ed2bbe229f4cd1ade39e8c4a26456e\",\n    \"role\": \"engineer\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/workspaces/1cda8958-2896-41d3-a66d-8adeb77c3353/members/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "workspaces",
+                    "1cda8958-2896-41d3-a66d-8adeb77c3353",
+                    "members",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Add Member to the workspace With Wrong ID",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"user\": \"98ed2bbe229f4cd1ade39e8c4a26456e\",\n    \"role\": \"engineer\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/workspaces/1cda8958-2896-41d3-a66d-8adeb77c3353/members/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "workspaces",
+                    "1cda8958-2896-41d3-a66d-8adeb77c3353",
+                    "members",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Add Member to the workspace With Wrong Role",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"user\": \"98ed2bbe229f4cd1ade39e8c4a26456e\",\n    \"role\": \"engineer\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/workspaces/1cda8958-2896-41d3-a66d-8adeb77c3353/members/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "workspaces",
+                    "1cda8958-2896-41d3-a66d-8adeb77c3353",
+                    "members",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get members of the workspace",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"user\": \"98ed2bbe229f4cd1ade39e8c4a26456e\",\n    \"role\": \"editor\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/workspaces/1cda8958-2896-41d3-a66d-8adeb77c3353/members/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "workspaces",
+                    "1cda8958-2896-41d3-a66d-8adeb77c3353",
+                    "members",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Workspace Summary",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/workspaces/1cda8958-2896-41d3-a66d-8adeb77c3353/summary/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "workspaces",
+                    "1cda8958-2896-41d3-a66d-8adeb77c3353",
+                    "summary",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
